@@ -1,0 +1,11 @@
+{
+  "flag1": 0,
+  "flag2": 0,
+  "flag3": 0,
+  "gravOrd": 1,
+  "mass": 500,
+  "A_drag": 1,
+  "Cd": 2.2,
+  "A_srp": 1,
+  "Cr": 1.31
+}

@@ -1,5 +1,3 @@
-Low-Thrust/Other
-Low-Thrust/OPM
-Low-Thrust/build
-Low-Thrust/install_log
+build
+install_log
 *.asv

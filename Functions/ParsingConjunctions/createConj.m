@@ -1,0 +1,22 @@
+data     = readtable('conjunctions_data.xlsx');
+datacell = table2cell(data);
+tles1    = datacell(:,9);
+tles2    = datacell(:,10);
+times1    = datacell(:,3);
+times2    = datacell(:,6);
+cart1    = tle2cart(tles1);
+cart2    = tle2cart(tles2);
+mu = 398600;
+s = size(cart1,1);
+for j = 1:2
+    time1     = times1(j);
+    time2     = times2(j);
+    time1     = time1{:};
+    time2     = time2{:};
+    cartprop1 = propKep(cart1(j,:),time1,mu);
+    cartprop2 = propKep(cart2(j,:),time2,mu);
+    e2b       = eci2Bplane(cartprop1(4:6),cartprop2(4:6));
+    e2b       = e2b([1,3],:);
+    eciRel    = cartprop1-cartprop2;
+    bRel      = e2b*cartprop1(1:3);
+end
