@@ -295,7 +295,7 @@ if errorlevel 2 (
 
     REM Extract astrotools.zip to WSL home
     echo   Extracting Astrotools from zip...
-    %WSL% "unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%"
+    %WSL% "sudo apt-get install -y unzip && unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%"
     if errorlevel 1 (
         echo [ERROR] Failed to extract astrotools.zip
         pause
