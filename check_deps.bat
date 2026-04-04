@@ -83,7 +83,7 @@ REM Detect WSL user/home
 for /f "delims=" %%u in ('wsl -d Ubuntu echo $USER') do set "WSLUSER=%%u"
 if "%WSLUSER%"=="" (
   echo [ERROR] Could not detect WSL user. >> "%LOG%"
-  echo [ERROR] Could not detect WSL user. Ensure Ubuntu WSL is installed.
+  echo [ERROR] Could not detect WSL user. Ensure Ubuntu WSL is installed -- Download it from the Windows store, then re-run this batch script
   pause
   exit /b 1
 )
@@ -135,8 +135,8 @@ if errorlevel 1 (
 )
 
 REM Install build essentials (gcc, g++, make)
-echo ==== Installing build essentials (GCC, G++, Make) ====
-%WSL% "sudo apt-get install -y build-essential" >> "%LOG%" 
+echo ==== Installing build essentials (GCC, G++, Make, BLAS, unzip) ====
+%WSL% "sudo apt-get install -y build-essential unzip" >> "%LOG%" 
 if errorlevel 1 (
     echo [ERROR] Failed to install build essentials
     echo.
@@ -295,7 +295,7 @@ if errorlevel 2 (
 
     REM Extract astrotools.zip to WSL home
     echo   Extracting Astrotools from zip...
-    %WSL% "sudo apt-get install -y unzip && unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%"
+    %WSL% "unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%"
     if errorlevel 1 (
         echo [ERROR] Failed to extract astrotools.zip
         pause
@@ -304,7 +304,7 @@ if errorlevel 2 (
 
     REM Install prerequisites via apt
     echo   Installing Astrotools build prerequisites (Eigen3, JSONcpp, DLib)...
-    %WSL% "sudo apt-get install -y libeigen3-dev libjsoncpp-dev libdlib-dev" >> "%LOG%"
+    %WSL% "sudo apt-get install -y libeigen3-dev libjsoncpp-dev libdlib-dev libblas-dev liblapack-dev libcppunit-dev" >> "%LOG%"
 
     REM Build + install
     echo   Building Astrotools...
