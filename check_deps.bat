@@ -77,7 +77,7 @@ REM ==========================================================
 :WSL
 set "ROOT=%~dp0"
 set "LOG=%ROOT%install_log.txt"
-del "%LOG%" >nul 2>&1
+del "%LOG%" >nul
 
 REM Detect WSL user/home
 for /f "delims=" %%u in ('wsl -d Ubuntu echo $USER') do set "WSLUSER=%%u"
@@ -102,14 +102,14 @@ choice /M "Install ubuntu updates now?"
         goto :CMAKE
     )
     echo Installing Ubuntu updates...
-    %WSL% "sudo apt-get update -y" >> "%LOG%" 2>&1
+    %WSL% "sudo apt-get update" >> "%LOG%"
     goto :CMAKE
 
 :CMAKE
 echo ==== Checking CMake installation ====
 
 REM Check if cmake is already installed
-%WSL% "cmake --version" >> "%LOG%" 2>&1
+%WSL% "cmake --version" >> "%LOG%"
 if errorlevel 1 (
     echo   CMake not found 
     choice /M "Install CMake now?"
@@ -120,7 +120,7 @@ if errorlevel 1 (
     )
     
     echo   Installing CMake...
-    %WSL% "sudo apt-get install -y cmake" >> "%LOG%" 2>&1
+    %WSL% "sudo apt-get install -y cmake" >> "%LOG%"
     if errorlevel 1 (
         echo [ERROR] Failed to install CMake
         echo.
@@ -134,7 +134,18 @@ if errorlevel 1 (
     echo.
 )
 
-goto :DACE
+REM Install build essentials (gcc, g++, make)
+echo ==== Installing build essentials (GCC, G++, Make) ====
+%WSL% "sudo apt-get install -y build-essential" >> "%LOG%" 
+if errorlevel 1 (
+    echo [ERROR] Failed to install build essentials
+    echo.
+    pause
+    exit /b 2
+) 
+    echo Build essentials installed
+    echo.
+    goto :DACE
 
 
 REM ==========================================================
@@ -146,11 +157,11 @@ REM ==========================================================
 echo ==== Checking DACE installation (/usr/local) ====
 
 REM Header
-%WSL% "sh -c 'test -f /usr/local/include/dace/dace.h || test -f /usr/include/dace/dace.h'" >> "%LOG%" 2>&1
+%WSL% "sh -c 'test -f /usr/local/include/dace/dace.h || test -f /usr/include/dace/dace.h'" >> "%LOG%"
 set DACE_HDR=%ERRORLEVEL%
 
 REM Library
-%WSL% "sh -c '[ -f /usr/local/lib/libdace_s.a ] || [ -f /usr/local/lib/libdace.so ] || [ -f /usr/local/lib/libdace.a ]'" >> "%LOG%" 2>&1
+%WSL% "sh -c '[ -f /usr/local/lib/libdace_s.a ] || [ -f /usr/local/lib/libdace.so ] || [ -f /usr/local/lib/libdace.a ]'" >> "%LOG%"
 set DACE_LIB=%ERRORLEVEL%
 
 if "%DACE_HDR%"=="0" if "%DACE_LIB%"=="0" (
@@ -167,18 +178,18 @@ if "%DACE_HDR%"=="0" if "%DACE_LIB%"=="0" (
     )
 
     REM Remove and clone fresh
-    %WSL% "cd /home/%WSLUSER% && git clone https://github.com/dacelib/dace.git dace" >> "%LOG%" 2>&1
+    %WSL% "cd /home/%WSLUSER% && git clone https://github.com/dacelib/dace.git dace" >> "%LOG%"
 
     REM Configure (with algebraic matrix support)
-    %WSL% "cmake -S /home/%WSLUSER%/dace -B /home/%WSLUSER%/dace-build -DWITH_ALGEBRAICMATRIX=ON" >> "%LOG%" 2>&1
+    %WSL% "cmake -S /home/%WSLUSER%/dace -B /home/%WSLUSER%/dace-build -DWITH_ALGEBRAICMATRIX=ON" >> "%LOG%"
     if errorlevel 1 goto :DACE_FAIL
 
     REM Build
-    %WSL% "cmake --build /home/%WSLUSER%/dace-build -j" >> "%LOG%" 2>&1
+    %WSL% "cmake --build /home/%WSLUSER%/dace-build -j" >> "%LOG%"
     if errorlevel 1 goto :DACE_FAIL
 
     REM Install into /usr/local
-    %WSL% "sudo cmake --install /home/%WSLUSER%/dace-build" >> "%LOG%" 2>&1
+    %WSL% "sudo cmake --install /home/%WSLUSER%/dace-build" >> "%LOG%"
     if errorlevel 1 goto :DACE_FAIL
 
     %WSL% "sudo ldconfig" >> "%LOG%"
@@ -201,11 +212,11 @@ REM ==========================================================
 echo ==== Checking CSPICE (/usr/local) ====
 
 REM Headers (allow /usr/local/include or /usr/local/include/cspice)
-%WSL% "sh -lc 'test -f /usr/include/SpiceUsr.h || test -f /usr/include/cspice/SpiceUsr.h || test -f /usr/local/include/SpiceUsr.h || test -f /usr/local/include/cspice/SpiceUsr.h'" >> "%LOG%" 2>&1
+%WSL% "sh -lc 'test -f /usr/include/SpiceUsr.h || test -f /usr/include/cspice/SpiceUsr.h || test -f /usr/local/include/SpiceUsr.h || test -f /usr/local/include/cspice/SpiceUsr.h'" >> "%LOG%"
 set CSPICE_HDR=%ERRORLEVEL%
 
 REM Libraries
-%WSL% "sh -lc '[ -f /usr/local/lib/cspice.a ] || [ -f /usr/local/lib/libcspice.so ] || [ -f /usr/local/lib/csupport.a ]'" >> "%LOG%" 2>&1
+%WSL% "sh -lc '[ -f /usr/local/lib/cspice.a ] || [ -f /usr/local/lib/libcspice.so ] || [ -f /usr/local/lib/csupport.a ]'" >> "%LOG%"
 set CSPICE_LIB=%ERRORLEVEL%
 
 if "%CSPICE_HDR%"=="0" if "%CSPICE_LIB%"=="0" (
@@ -223,10 +234,10 @@ if "%CSPICE_HDR%"=="0" if "%CSPICE_LIB%"=="0" (
 
     REM Download Linux GCC64 package
     echo   Downloading Linux CSPICE package...
-    %WSL% "mkdir -p /home/%WSLUSER%/naif && cd /home/%WSLUSER%/naif && rm -f cspice.tar* && curl -L -O https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z" >> "%LOG%" 2>&1
+    %WSL% "mkdir -p /home/%WSLUSER%/naif && cd /home/%WSLUSER%/naif && rm -f cspice.tar* && curl -L -O https://naif.jpl.nasa.gov/pub/naif/toolkit/C/PC_Linux_GCC_64bit/packages/cspice.tar.Z" >> "%LOG%"
 
     REM Extract (.Z requires `uncompress`)
-    %WSL% "cd /home/%WSLUSER%/naif && uncompress -f cspice.tar.Z && tar xf cspice.tar" >> "%LOG%" 2>&1
+    %WSL% "cd /home/%WSLUSER%/naif && uncompress -f cspice.tar.Z && tar xf cspice.tar" >> "%LOG%"
 
     REM Copy include + lib to system
     echo   Installing CSPICE headers/libs into /usr/local...
@@ -254,11 +265,11 @@ REM ==========================================================
 echo ==== Checking Astrotools installation ====
 
 REM Header check (e.g., dynorb/AIDA.h)
-%WSL% "sh -lc 'test -f /usr/local/include/dynorb/AIDA.h || test -f /usr/include/dynorb/AIDA.h'" >> "%LOG%" 2>&1
+%WSL% "sh -lc 'test -f /usr/local/include/dynorb/AIDA.h || test -f /usr/include/dynorb/AIDA.h'" >> "%LOG%"
 set AT_HDR=%ERRORLEVEL%
 
 REM Library check (astro, geco)
-%WSL% "sh -lc '[ -f /usr/local/lib/libastro.so ] || [ -f /usr/local/lib/libgeco.so ]'" >> "%LOG%" 2>&1
+%WSL% "sh -lc '[ -f /usr/local/lib/libastro.so ] || [ -f /usr/local/lib/libgeco.so ]'" >> "%LOG%"
 set AT_LIB=%ERRORLEVEL%
 
 if "%AT_HDR%"=="0" if "%AT_LIB%"=="0" (
@@ -284,7 +295,7 @@ if errorlevel 2 (
 
     REM Extract astrotools.zip to WSL home
     echo   Extracting Astrotools from zip...
-    %WSL% "unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%" 2>&1
+    %WSL% "unzip -q -o /mnt/c/$(echo '%ASTROTOOLS_ZIP:C:\=\%' | sed 's|\\|/|g') -d /home/%WSLUSER%" >> "%LOG%"
     if errorlevel 1 (
         echo [ERROR] Failed to extract astrotools.zip
         pause
@@ -293,18 +304,18 @@ if errorlevel 2 (
 
     REM Install prerequisites via apt
     echo   Installing Astrotools build prerequisites (Eigen3, JSONcpp, DLib)...
-    %WSL% "sudo apt-get install -y libeigen3-dev libjsoncpp-dev libdlib-dev" >> "%LOG%" 2>&1
+    %WSL% "sudo apt-get install -y libeigen3-dev libjsoncpp-dev libdlib-dev" >> "%LOG%"
 
     REM Build + install
     echo   Building Astrotools...
-    %WSL% "cd /home/%WSLUSER%/astrotools && cmake -S . -B _build" >> "%LOG%" 2>&1
+    %WSL% "cd /home/%WSLUSER%/astrotools && cmake -S . -B _build" >> "%LOG%"
     if errorlevel 1 goto :ASTROTOOLS_FAIL
 
-    %WSL% "cmake --build /home/%WSLUSER%/astrotools/_build -j" >> "%LOG%" 2>&1
+    %WSL% "cmake --build /home/%WSLUSER%/astrotools/_build -j" >> "%LOG%"
     if errorlevel 1 goto :ASTROTOOLS_FAIL
 
     echo   Installing Astrotools into /usr/local...
-    %WSL% "sudo cmake --install /home/%WSLUSER%/astrotools/_build" >> "%LOG%" 2>&1
+    %WSL% "sudo cmake --install /home/%WSLUSER%/astrotools/_build" >> "%LOG%"
     if errorlevel 1 goto :ASTROTOOLS_FAIL
 
     %WSL% "sudo ldconfig" >> "%LOG%"
@@ -324,7 +335,7 @@ REM 2026: Code Improved using Claude (Sonnet 4.6)
 echo ==== Checking nlohmann-Json ====
 
 REM Header check (allow /usr/include or /usr/local/include)
-%WSL% "sh -lc 'test -f /usr/include/nlohmann/json.hpp || test -f /usr/local/include/nlohmann/json.hpp'" >> "%LOG%" 2>&1
+%WSL% "sh -lc 'test -f /usr/include/nlohmann/json.hpp || test -f /usr/local/include/nlohmann/json.hpp'" >> "%LOG%"
 set JSON_HDR=%ERRORLEVEL%
 
 if "%JSON_HDR%"=="0" (
@@ -341,7 +352,7 @@ if "%JSON_HDR%"=="0" (
     )
     
     echo   Installing nlohmann-Json...
-    %WSL% "sudo apt-get install -y nlohmann-json3-dev" >> "%LOG%" 2>&1
+    %WSL% "sudo apt-get install -y nlohmann-json3-dev" >> "%LOG%"
     if errorlevel 1 (
         echo [ERROR] Failed to install nlohmann-Json
         echo.
