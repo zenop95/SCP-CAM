@@ -95,20 +95,43 @@ echo.
 
 REM Helper macro for WSL execution
 set "WSL=cmd /c wsl -d Ubuntu bash -lc"
-goto :CMAKE
-
+choice /M "Install ubuntu updates now?"
+    if errorlevel 2 (
+        echo Skipped Ubuntu updates by user.
+        echo.
+        goto :CMAKE
+    )
+    echo Installing Ubuntu updates...
+    %WSL% "sudo apt-get update -y" >> "%LOG%" 2>&1
+    goto :CMAKE
 
 :CMAKE
-%WSL% "sudo apt-get update" >> "%LOG%" 2>&1
-%WSL% "sudo apt install cmake" >> "%LOG%" 2>&1
-if "%ERRORLEVEL%"=="0" (
-    echo   CMAKE installed
+echo ==== Checking CMake installation ====
+
+REM Check if cmake is already installed
+%WSL% "cmake --version" >> "%LOG%" 2>&1
+if errorlevel 1 (
+    echo   CMake not found 
+    choice /M "Install CMake now?"
+    if errorlevel 2 (
+        echo Skipped CMake installation by user.
+        echo.
+        goto :DACE
+    )
+    
+    echo   Installing CMake...
+    %WSL% "sudo apt-get install -y cmake" >> "%LOG%" 2>&1
+    if errorlevel 1 (
+        echo [ERROR] Failed to install CMake
+        echo.
+        pause
+        exit /b 2
+    )
+    echo   CMake installed
     echo.
 ) else (
-    echo Manually install CMake before proceeding
+    echo   CMake already installed
     echo.
-    pause
-    exit /b
 )
 
 goto :DACE
@@ -120,7 +143,7 @@ REM ==    Requires -DWITH_ALGEBRAICMATRIX=ON for Astrotools
 REM ==========================================================
 
 :DACE
-echo ==== Checking DACE (/usr/local) ====
+echo ==== Checking DACE installation (/usr/local) ====
 
 REM Header
 %WSL% "sh -c 'test -f /usr/local/include/dace/dace.h || test -f /usr/include/dace/dace.h'" >> "%LOG%" 2>&1
