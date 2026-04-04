@@ -71,9 +71,9 @@ if "%FOUND_MATLAB%"=="" (
     goto :WSL
 
 
-REM ============================================
-REM  Check WSL installation
-REM ============================================
+REM ==========================================================
+REM  Check WSL Ubuntu installation and CMAKE installation
+REM ==========================================================
 :WSL
 set "ROOT=%~dp0"
 set "LOG=%ROOT%install_log.txt"
@@ -95,7 +95,24 @@ echo.
 
 REM Helper macro for WSL execution
 set "WSL=cmd /c wsl -d Ubuntu bash -lc"
+goto :CMAKE
+
+
+:CMAKE
+%WSL% "sudo apt-get update" >> "%LOG%" 2>&1
+%WSL% "sudo apt install cmake" >> "%LOG%" 2>&1
+if "%ERRORLEVEL%"=="0" (
+    echo   CMAKE installed
+    echo.
+) else (
+    echo Manually install CMake before proceeding
+    echo.
+    pause
+    exit /b
+)
+
 goto :DACE
+
 
 REM ==========================================================
 REM ==    DACE detection & installation (Linux procedure)
@@ -127,7 +144,7 @@ if "%DACE_HDR%"=="0" if "%DACE_LIB%"=="0" (
     )
 
     REM Remove and clone fresh
-    %WSL% "rm -rf /home/%WSLUSER%/dace /home/%WSLUSER%/dace-build && cd /home/%WSLUSER% && git clone https://github.com/dacelib/dace.git dace" >> "%LOG%" 2>&1
+    %WSL% "cd /home/%WSLUSER% && git clone https://github.com/dacelib/dace.git dace" >> "%LOG%" 2>&1
 
     REM Configure (with algebraic matrix support)
     %WSL% "cmake -S /home/%WSLUSER%/dace -B /home/%WSLUSER%/dace-build -DWITH_ALGEBRAICMATRIX=ON" >> "%LOG%" 2>&1
