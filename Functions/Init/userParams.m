@@ -18,10 +18,10 @@ up.nxOrb = 60;
 
 %% Time window [in number of orbits from first TCA]
 up.n_orbits_forward  = 0;
-up.n_orbits_backward = 2;
+up.n_orbits_backward = 1;
 
 %% Propulsion (UNSCALED)
-up.uMax = 1e-8;   % [km/s^2]
+up.uMax = 3.75e-7;   % [km/s^2]
 up.uMin = 0;      % [km/s^2]
 
 %% Constraints & toggles
@@ -35,10 +35,10 @@ up.tolMaj     = 1e-3;
 up.tolMin     = 1e-6;
 
 %% objective/risk settings
-up.obj      = 'risk';          % 'risk' | 'max_risk' | 'miss_distance' | '2d'
+up.obj      = 'miss_distance';          % 'risk' | 'max_risk' | 'miss_distance' | '2d'
 up.PoCType  = 'Chan';          % 'Constant' | 'Maximum' | 'Chan' | 'Alfano'
 up.ipc_type = 'Constant';      % 'Constant' | 'Serra' | 'Maximum' | 'Cuboid'
-up.mdLim    = 0.5;               % [km] 
+up.mdLim    = 2;               % [km] 
 up.pocLim   = 1e-6;
 
 %% Station-keeping

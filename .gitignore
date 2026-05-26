@@ -1,3 +1,7 @@
 build
 install_log
 *.asv
+data_sharing/out_prop_sec.json
+data_sharing/out_prop.json
+data_sharing/initial_state.json
+data_sharing/AIDA_init.json
