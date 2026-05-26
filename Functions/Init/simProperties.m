@@ -1,4 +1,4 @@
-function pp = simProperties()
+function pp = simProperties(i)
 % simParams
 % Assembles the full configuration structure 'pp' by:
 %   1) Loading user parameters
@@ -12,7 +12,7 @@ function pp = simProperties()
 %--------------------------------------------------------------------------
 
 % 1. User params
-up = userParams();
+up = userParams(i);
 
 % 2. House defaults
 dp = defaultParams();

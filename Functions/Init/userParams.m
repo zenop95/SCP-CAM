@@ -1,4 +1,4 @@
-function up = userParams()
+function up = userParams(i)
 % USERPARAMS Defines specific parameters for the algorithm. The code should
 % be carefully edited by the user.
 % 
@@ -10,8 +10,8 @@ function up = userParams()
 %% Scenario selection
 up.orbit        = 'leo';           % 'leo' | 'geo'
 up.scenario     = 'single-short';   % 'single-short' | 'single-long' | 'multiple-short' | 'repeating-short'
-up.ESACase      = 1;               % '1-2170', only used if up.scenario == 'single-short'
-up.gmmOrder     = 1;              % Must be odd number
+up.ESACase      = i;               % '1-2170', only used if up.scenario == 'single-short'
+up.gmmOrder     = 0;              % Must be odd number
 
 %% discretization per orbit
 up.nxOrb = 60;

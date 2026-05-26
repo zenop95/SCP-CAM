@@ -58,13 +58,13 @@
 % Date:   2022-2024
 %--------------------------------------------------------------------------
 
-clear; close all;
+clc; clear; close all;
 
 % 0) Path init / toolboxes
 initializePath();
 
 % 1) Build full configuration
-pp = simProperties();
+pp = simProperties(1);
 
 % 2) Run SCP pipeline
 pp = runSCP(pp);
