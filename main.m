@@ -58,7 +58,7 @@
 % Date:   2022-2024
 %--------------------------------------------------------------------------
 
-clc; clear; close all;
+clc; clear; %close all;
 
 % 0) Path init / toolboxes
 initializePath();

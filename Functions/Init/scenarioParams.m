@@ -27,6 +27,7 @@ else
     switch lower(pp.scenario)
         case 'single-short'
             pp = generateInitShort(pp);
+            % pp = readCDM_CONGEN(pp);
         case 'single-long'
             pp = generateInitLong(pp);
         case 'multiple-short' 
