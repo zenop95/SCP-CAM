@@ -11,14 +11,14 @@ function up = userParams(i)
 up.orbit        = 'leo';           % 'leo' | 'geo'
 up.scenario     = 'single-short';   % 'single-short' | 'single-long' | 'multiple-short' | 'repeating-short'
 up.ESACase      = i;               % '1-2170', only used if up.scenario == 'single-short'
-up.gmmOrder     = 0;              % Must be odd number
+up.gmmOrder     = 1;              % Must be odd number
 
 %% discretization per orbit
 up.nxOrb = 60;
 
 %% Time window [in number of orbits from first TCA]
 up.n_orbits_forward  = 0;
-up.n_orbits_backward = 1;
+up.n_orbits_backward = 0.42;
 
 %% Propulsion (UNSCALED)
 up.uMax = 3.75e-7;   % [km/s^2]
