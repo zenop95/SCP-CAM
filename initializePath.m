@@ -27,7 +27,7 @@ addpath(genpath('.\CppExec'))
 addpath(genpath('.\OPM'))
 addpath(genpath('.\CDM'))
 addpath(genpath('.\data_sharing'))
-addpath(genpath('C:\Program Files\Mosek\10.0\toolbox\r2017a'));
+addpath(genpath('C:\Program Files\Mosek\11.2\toolbox\r2019b'));
 set(0,'DefaultTextInterpreter','latex');
 set(0,'DefaultAxesFontSize',16);
 set(0,'DefaultAxesFontName','Times');
