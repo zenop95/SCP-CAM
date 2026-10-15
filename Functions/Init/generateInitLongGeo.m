@@ -37,7 +37,7 @@ s(j).tca      = 1;         % [s] TCA of conjunction w.r.t. initial time t0 = 0
 s(j).x0       = [];
 s(j).relState = [];
 s(j).relState = [dr0; dv0];                                                % [km] [km/s] Relative cartesian state at TCA in RTN
-% s(j).coe = [42167.76 9e-5 deg2rad(0.119) deg2rad(76.18) deg2rad(241.58) deg2rad(119.44)]';
+% s(j).coe = [42167.765854 1.118e-4 deg2rad(0.118860) deg2rad(76.181269) deg2rad(268.82347) deg2rad(92.207487)]';
 % s(j).x0 = kepler2cartesian(s(j).coe(1),s(j).coe(2), ...
 %     s(j).coe(4),s(j).coe(3),s(j).coe(5),s(j).coe(6),mu);                        % [km] [km/s] Relative cartesian state at TCA
 % s(j).C0       = diag([10 5 0.5 0.25 0.75 0.05]/1e3).^2;             % [km^2] [km^2/s^2] Covariance at TCA

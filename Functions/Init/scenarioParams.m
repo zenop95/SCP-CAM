@@ -26,10 +26,12 @@ if strcmpi(up.orbit,'geo')
 else
     switch lower(pp.scenario)
         case 'single-short'
-            pp = generateInitShort(pp);
+            % pp = generateInitShort(pp);
+            pp = generateInit_CARA(pp,'short');
             % pp = readCDM_CONGEN(pp);
         case 'single-long'
-            pp = generateInitLong(pp);
+            % pp = generateInitLong(pp);
+            pp = generateInit_CARA(pp,'long');
         case 'multiple-short' 
             pp = generateInitMultipleStarlink(pp);
         case 'repeating-short'    

@@ -1,13 +1,13 @@
 % 0) Path init / toolboxes
 initializePath();
-n           = 2170;
+n           = 53;
 DvTot       = nan(n,1);
 poc         = nan(n,1);
 md          = nan(n,1);
 t_thrust    = nan(n,1);
 
 %%
-for i = 1:2170
+for i = 1:n
     try
         fprintf('\n============================================================\n');
         fprintf('Running scenario %d / %d \n', i, n);

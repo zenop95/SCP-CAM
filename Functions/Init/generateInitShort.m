@@ -1,4 +1,10 @@
 function pp = generateInitShort(pp)
+%
+% Author: Zeno Pavanello
+% E-mail: zpav176@aucklanduni.ac.nz
+% Date:   2022-2024
+%--------------------------------------------------------------------------
+
 ind    = pp.ESACase;
 mu     = pp.mu;    % [m^3/s^2]
 load("data/conjunctions_leo.mat");

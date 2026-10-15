@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                         %
 %                                                                         %
-% Sequential Convex Program for Collision Avoidance Manoeuvres (SCP CAM)  %
+% Sequential Convex Program for Collision Avoidance Maneuvers (SCP CAM)  %
 %                                                                         %
 %                                                                         %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,7 +16,7 @@
 %--------------------------------------------------------------------------
 %
 % This project implements Sequential Convex Programming (SCP) methods for
-% Collision Avoidance Manoeuvres (CAMs). This is a complete software to
+% Collision Avoidance Maneuvers (CAMs). This is a complete software to
 % compute CAMs for any kind of conjunctions, both short- and long-term,
 % with single or multiple secondaries.
 % 
@@ -50,7 +50,7 @@
 %  - Figures created by postprocessing and files if downstream routines save them
 %
 % Compatibility:
-%  - MATLAB R2022a and newer (tested up to R2025b)
+%  - MATLAB R2022a and newer (tested up to R2026b)
 %  - MOSEK 10.0
 %
 % Author: Zeno Pavanello
@@ -58,13 +58,13 @@
 % Date:   2022-2024
 %--------------------------------------------------------------------------
 
-clc; clear; %close all;
+% clc; clear; close all;
 
 % 0) Path init / toolboxes
 initializePath();
 
 % 1) Build full configuration
-pp = simProperties(1);
+pp = simProperties(21);
 
 % 2) Run SCP pipeline
 pp = runSCP(pp);
