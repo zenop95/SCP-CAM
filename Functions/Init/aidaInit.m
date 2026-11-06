@@ -46,7 +46,7 @@ function pp = aidaInit(pp, sc, j)
     % Select spacecraft parameters
     switch lower(sc)
         case "primary"
-            S = pp.primary;
+            S = pp.primary(1);
         case "secondary"
             if ~isfield(pp,'secondary') || j > numel(pp.secondary)
                 error('aidaInit:BadIndex',...

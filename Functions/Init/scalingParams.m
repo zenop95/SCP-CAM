@@ -18,7 +18,7 @@ pp.primary.x0    = pp.cart2x(pp.primary.cart0);
 
 % Covariance transform (ECI/RTN handling if present)
 D = diag(1 ./ pp.scaling(1:6));
-if isfield(pp, 'initCovRtn') && pp.initCovRtn
+if isfield(pp, 'initCovRtn_P') && pp.initCovRtn_P
     [r2e, w] = rtn2eci(pp.primary.cart0(1:3), pp.primary.cart0(4:6));
     R2E      = rot6(r2e, w);
 else

@@ -18,6 +18,8 @@ pp.nDAVars          = dp.nDAVars;
 pp.nDepVars         = dp.nDepVars;
 pp.adaptTrustRegion = dp.adaptTrustRegion;
 up.singleObject     = true;
+%up.singleObject_P     = true;
+%up.singleObject_S     = true;
 pp.toggleRefineTca  = false; 
 
 % Initial orbit & objects
@@ -34,6 +36,8 @@ else
             pp = generateInitMultipleStarlink(pp);
         case 'repeating-short'    
             pp = generateInitMultipleGmm(pp);
+        case 'single-long-gmm'    
+            pp = generateInitGmmPS(pp); % GMM Splitting for Primary & Secondary objects
         otherwise
             error('pp.scenario must be set to a valid entry')
     end
@@ -84,8 +88,13 @@ pp.ipc_type = up.ipc_type;
 pp.pocConstr             = logical(up.pocConstr);
 
 % Adapt SMD limit: auto-enable if there are multiple secondaries or GMM>1
-pp.adaptSmdLimit = logical((length(pp.secondary) > 1 || ...
-                            pp.gmmOrder > 1) && ~pp.pocConstr);
+% pp.adaptSmdLimit = logical((length(pp.secondary) > 1 || pp.gmmOrder(2) > 1) && ~pp.pocConstr);
+
+% pp.adaptSmdLimit = 0;
+
+% Adapt SMD limit: auto-enable if there are multiple primaries and/or
+% secondaries or GMM>1 for primary/secondary 
+pp.adaptSmdLimit = logical((length(pp.primary) > 1 || length(pp.secondary) > 1 || pp.gmmOrder(1) > 1 || pp.gmmOrder(2) > 1) && ~pp.pocConstr);
 
 % Station-keeping intent
 pp.stationKeeping = logical(up.stationKeeping);
