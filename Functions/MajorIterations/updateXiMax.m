@@ -1,12 +1,16 @@
 function [nu_max,rho,Ju,nonLinCost,refute] = updateXiMax(pp,majorIter,nu_max,linTraj,iter)
 % Trust region parameters
-N       = pp.N;  
+N       = pp.N; 
 rho1    = 0.1;
 rho2    = 0.2;
 rho3    = 0.4;
 rho4    = 0.8;
 beta1   = 1/4;
 beta2   = 4;
+
+Np = numel(pp.primary);
+Ns = numel(pp.secondary);
+
 % nonlinear keplerian propagation
 % nonLinX(:,1) = linTraj(:,1);
 % for i = 1:pp.N-1
@@ -14,31 +18,62 @@ beta2   = 4;
 %     nonLinX(:,i+1) = propKepOde(linTraj(:,i),uEci,pp.t(i+1)-pp.t(i),1);
 % end
 u       = reshape(majorIter.u,3*N,1);
-fid = fopen('initial_state.dat', 'w');
-fprintf(fid, '%2i\n',     N);
-fprintf(fid, '%40.12f\n', pp.t);
-fprintf(fid, '%40.12f\n', pp.et);
-fprintf(fid, '%2i\n',     1);
-fprintf(fid, '%40.12f\n', pp.uMax);
-fprintf(fid, '%40.12f\n', pp.scaling(1));
-fprintf(fid, '%2i\n',     pp.flagRtn); %Flag for type of propagation
-fprintf(fid, '%2i\n',     2); %Flag for type of propagation
-for i = 1:6*N
-     fprintf(fid, '%40.12f\n', linTraj(i));       
-end
-for i = 1:3*N
-    fprintf(fid, '%40.12f\n', u(i));
-end
-fclose(fid);
-aidaInit(pp,'primary');
-!wsl ./CppExec/propAida
-nonLinX      = reshape(load("constCart.dat"),6,N);
-pp.timeSubtr = pp.timeSubtr + load("timeOut.dat");
+nonLinX = nan(6, N, Np);
 
-linX    = reshape(linTraj,6,N);
-nonLinVc  = max(normOfVec(nonLinX-linX))*pp.vcWeight;
-Jvc = max(majorIter.minorIter(end).virtual)*pp.vcWeight; 
+for ip = 1:Np
 
+    % Write the reference trajectory of this mixand and the
+    % common control history to the AIDA input file.
+    fid = fopen('initial_state.dat', 'w');
+
+    if fid == -1
+        error('updateXiMax: Could not open initial_state.dat.');
+    end
+
+    fprintf(fid, '%2i\n', N);
+    fprintf(fid, '%40.12f\n', pp.t);
+    fprintf(fid, '%40.12f\n', pp.et);
+    fprintf(fid, '%2i\n', 1);
+    fprintf(fid, '%40.12f\n', pp.uMax);
+    fprintf(fid, '%40.12f\n', pp.scaling(1));
+    fprintf(fid, '%2i\n', pp.flagRtn);
+    fprintf(fid, '%2i\n', 2);
+
+    % This mixand's reference trajectory: 6 x N.
+    traj_ip = linTraj(:,:,ip);
+
+    fprintf(fid, '%40.12f\n', traj_ip(:));
+
+    % Same control history for every primary mixand.
+    fprintf(fid, '%40.12f\n', u);
+
+    fclose(fid);
+
+    % Initialize and execute AIDA for this primary mixand.
+    aidaInit(pp_ip, 'primary',ip);
+
+    % Nonlinear propagation of primary mixand
+    !wsl ./CppExec/propAida
+
+    % Read the nonlinear Cartesian trajectory before the next
+    % execution overwrites constCart.dat.
+    nonLinX(:,:,ip) = reshape(load('constCart.dat'), 6, N);
+
+    % Accumulate propagation time.
+    pp.timeSubtr = pp.timeSubtr + load('timeOut.dat');
+end
+
+linX = linTraj;
+
+% Nonlinear propagation error 
+errMax = 0;
+for ip = 1:Np
+    err = normOfVec(nonLinX(:,:,ip)-linX(:,:,ip));
+    errMax  = max(errMax, max(err(:))); % largest error over all nodes and mixands
+end
+nonLinVc  = errMax*pp.vcWeight;
+% Jvc = max(majorIter.minorIter(end).virtual)*pp.vcWeight; 
+Jvc = max(abs(majorIter.minorIter(end).virtual),[],'all')* pp.vcWeight;
 
 %% Update
 Ju         = sum(normOfVec(majorIter.u))*pp.ctrlWeight;
