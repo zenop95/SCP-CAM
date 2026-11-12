@@ -9,8 +9,7 @@ function up = userParams(i)
 
 %% Scenario selection
 up.orbit        = 'leo';           % 'leo' | 'geo'
-up.scenario     = 'single-long-gmm';   % 'single-short' | 'single-long' | 'multiple-short' | 'repeating-short' | 'single-long-gmm'
-up.ESACase      = i;               % '1-2170', only used if up.scenario == 'single-short'
+up.scenario     = 'single-long-gmm'; % 'single-short' | 'single-long' | 'multiple-short' | 'repeating-short' | 'single-long-gmm'
 up.gmmOrder     = [3; 5];          % Must be odd number
                                    % No of mixands [Primary; Secondary]
 %% discretization per orbit
@@ -26,7 +25,7 @@ up.uMin = 0;      % [km/s^2]
 
 %% Constraints & toggles
 up.pocConstr               = false;  % if true => minor iters forced to 1
-up.enableSmdGradConstraint = false;
+up.enableSmdGradConstraint = true;
 
 %% Optimizer limits
 up.iterMaxMaj = 10;
@@ -36,16 +35,9 @@ up.tolMin     = 1e-6;
 
 %% objective/risk settings
 up.obj      = 'risk';          % 'risk' | 'max_risk' | 'miss_distance' | '2d'
-up.PoCType  = 'Chan';          % 'Constant' | 'Maximum' | 'Chan' | 'Alfano'
 up.ipc_type = 'Constant';      % 'Constant' | 'Serra' | 'Maximum' | 'Cuboid'
 up.mdLim    = 2;               % [km] 
 up.pocLim   = 1e-6;
-
-%% Station-keeping
-up.stationKeeping = false;
-up.skSoft         = false;
-up.altSk          = false;   
-up.enableSkTarget = false;
 
 %% Epoch at TCA (UTC string)
 up.utc = '06/03/2020 15:00:00';
