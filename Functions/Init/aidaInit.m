@@ -26,14 +26,6 @@ function pp = aidaInit(pp, sc, j)
     outDir = "./data_sharing";
     if ~exist(outDir, 'dir'), mkdir(outDir); end
 
-    % GEO shortcut: no atmosphere
-    if isfield(pp,'orbit') && strcmpi(pp.orbit,'geo')
-        % Align with pp.aida.* usage
-        if isfield(pp,'aida')
-            pp.aida.flag1 = 0;   % 0: disable atmosphere in GEO
-        end
-    end
-
     % Validate pp.aida fields exist
     requiredAida = ["flag1","flag2","flag3","gravOrd"];
     for f = requiredAida
@@ -46,7 +38,11 @@ function pp = aidaInit(pp, sc, j)
     % Select spacecraft parameters
     switch lower(sc)
         case "primary"
-            S = pp.primary(1);
+            if ~isfield(pp,'primary') || j > numel(pp.primary)
+                error('aidaInit:BadIndex',...
+                      'Primary index j=%d is invalid.', j);
+            end
+            S = pp.primary(j);
         case "secondary"
             if ~isfield(pp,'secondary') || j > numel(pp.secondary)
                 error('aidaInit:BadIndex',...
@@ -58,7 +54,7 @@ function pp = aidaInit(pp, sc, j)
     end
 
     % Validate required spacecraft fields
-    requiredSC = ["mass","A_drag","Cd","A_srp","Cr"];
+    requiredSC = "mass"; %["mass","A_drag","Cd","A_srp","Cr"];
     for f = requiredSC
         if ~isfield(S, f)
             error('aidaInit:MissingSCField', ...
@@ -72,12 +68,8 @@ function pp = aidaInit(pp, sc, j)
         'flag2',   int64(pp.aida.flag2), ...
         'flag3',   int64(pp.aida.flag3), ...
         'gravOrd', int64(pp.aida.gravOrd), ...
-        'mass',    S.mass, ...
-        'A_drag',  S.A_drag, ...
-        'Cd',      S.Cd, ...
-        'A_srp',   S.A_srp, ...
-        'Cr',      S.Cr ...
-    );
+        'mass',    S.mass); % 'A_drag',  S.A_drag,  'Cd',      S.Cd, 'A_srp',   S.A_srp,  'Cr',      S.Cr
+    
 
     % Write pretty JSON (easy to inspect)
     jsonText = jsonencode(payload, 'PrettyPrint', true);
