@@ -30,19 +30,11 @@ dp.nDepVars  = 12;
 % NLI limits (scaled)
 dp.nu_max = 1e-3;
 dp.nu_m   = 1e-10;
-dp.nu_M   = 1e-2;
-
-% station-keeping defaults
-dp.skDev          = [0.05 0.05]';       % [deg] lat/lon bounds (soft/hard downstream)
-dp.altLimKm       = [35783 35790.7]';   % [km] GEO box; scaled later
-dp.targWeight     = 1e3;                % soft target weight
-dp.skWeight       = 100;                % soft geodetic slack weight
-dp.skLength       = 14;                 % Days of GEO SK validity after end of maneuver
-dp.loadTarget     = false;              
+dp.nu_M   = 1e-2;            
 
 % SMD gradient constraint defaults
-dp.enableSmdGradConstraint = false;
-dp.smdSoft            = false;   % enabled only when enableSmdGradConstraint=true
+dp.enableSmdGradConstraint = true;
+dp.smdSoft            = true;   % enabled only when enableSmdGradConstraint=true
 dp.smdGradSlackWeight = 1e-1;
 dp.maxIpcDeviation    = 0.1;
 dp.sdmGradTrig        = 0.1;

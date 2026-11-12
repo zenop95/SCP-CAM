@@ -37,12 +37,7 @@ end
 
 % If the gravity order is 0 set it to 1 for incompatibility with AIDA code
 if pp.aida.gravOrd == 0
-    pp.aida.gravOrd = 1;
-end
-
-% If the orbit is GEO, turn off the atmospheric model
-if strcmpi(pp.orbit,'geo')
-    pp.aida.flag1 = 0;
+   pp.aida.gravOrd = 1;
 end
 
 end
