@@ -3,7 +3,7 @@ function pp = aidaInit(pp, sc, j)
 %
 %   pp = aidaInit(pp, sc, j)
 %     sc ∈ {'primary','secondary'}
-%     j  is required when sc == 'secondary' (index of the secondary)
+%     j  is the index of the primary/ secondary
 %
 % Output JSON path:
 %   ./data_sharing/AIDA_init.json
@@ -70,7 +70,6 @@ function pp = aidaInit(pp, sc, j)
         'gravOrd', int64(pp.aida.gravOrd), ...
         'mass',    S.mass); % 'A_drag',  S.A_drag,  'Cd',      S.Cd, 'A_srp',   S.A_srp,  'Cr',      S.Cr
     
-
     % Write pretty JSON (easy to inspect)
     jsonText = jsonencode(payload, 'PrettyPrint', true);
 
@@ -82,4 +81,6 @@ function pp = aidaInit(pp, sc, j)
     end
     fwrite(fid, jsonText, 'char');
     fclose(fid);
+    
+    fprintf(fid,'%s',jsonencode(payload));
 end
