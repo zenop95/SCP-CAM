@@ -1,13 +1,14 @@
-function ipc_totGmm = ipcTotGmm(ipcPair)
-% ipcTotGmm computes the total IPoC when multiple conjunctions and mixands are considered.
+function ipc_totGmm = Gmm_ipcTot(ipcPair)
+% Gmm_ipcTot computes the total IPoC when multiple conjunctions and mixands are considered.
 % 
 % INPUT: ipcPair = [-] (N,K) Vector with the IPoC of single conjunctions
 % per mixand pair
 %        
 % OUTPUT: ipc_totGmm = [-] () IPoC of all the conjunctions
 % 
-% Author: 
-% E-mail: 
+% Author: Zeno Pavanello, 2023
+% E-mail: zpav176@aucklanduni.ac.nz 
+% Updated: Ananya Dave, 2026 (primary+secondary mixands)
 %--------------------------------------------------------------------------
 [N, K] = size(ipcPair); % K = Ns*Np
 ipc_totGmm = nan(N,1);
