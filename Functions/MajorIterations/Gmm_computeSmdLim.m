@@ -24,8 +24,7 @@ for j = 1:K
     %if strcmp(obj,'max_risk')    
     %   smdLim(j,:) = (sqrt(2)*HBR)^3./(3*exp(1)*sqrt(pi*detP)*ipcLim);         % [-] (N,1) SMD limit computed with the maximum risk formula
     if strcmp(obj,'risk')
-        % smdLim(j,:) = -2*log(3/w(j)*ipcLim*sqrt(pi*detP)/(sqrt(2)*HBR^3));           % [-] (N,1) SMD limit computed with Alfriend and Akella's formula applied to IPC
-        smdLim(:,j) = -2*log(3*ipcLim*sqrt(pi*detP)/(sqrt(2)*HBR^3));           % [-] (N,1) SMD limit computed with Alfriend and Akella's formula applied to IPC
+        smdLim(:,j) = -2*log(3/w(j)*ipcLim*sqrt(pi*detP)/(sqrt(2)*HBR^3));           % [-] (N,1) SMD limit computed with Alfriend and Akella's formula applied to IPC
     else
         error('Invalid objective specification.');
     end
